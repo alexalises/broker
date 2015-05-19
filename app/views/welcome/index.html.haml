@@ -1,0 +1,73 @@
+%h1 Welcome to StackVDI
+%p Please, select the machine you want to connect to
+
+
+// TODO
+// Refactor this
+-@porcentaje = @running_machines.count.to_f/@max_concurrent_machines 
+-if @porcentaje.to_f == 0
+  %div.progress.progress-success.active
+    %div.bar{:style => "width: 100%;"}
+      = "You have #{@max_concurrent_machines}  #{"machine".pluralize(@max_concurrent_machines)} #{"available".pluralize(@max_concurrent_machines)} to launch"
+-elsif @porcentaje.to_f < 0.51
+  %div.progress.progress.active
+    %div.bar{:style => "width:#{@porcentaje * 100}%;"}
+      You have #{@max_concurrent_machines - @running_machines.count} #{"machine".pluralize(@max_concurrent_machines - @running_machines.count)} #{"available".pluralize(@max_concurrent_machines-@running_machines.count)} to launch
+-elsif @porcentaje.to_f < 1
+  %div.progress.progress-warning.active
+    %div.bar{:style => "width:#{@porcentaje * 100}%;"}
+      You have #{@max_concurrent_machines - @running_machines.count} #{"machine".pluralize(@max_concurrent_machines - @running_machines.count)} #{"available".pluralize(@max_concurrent_machines-@running_machines.count)} to launch
+-else
+  %div.progress.progress-danger.active
+    %div.bar{:style => "width: 100%;"}
+      You don't have machines availables to launch
+
+
+-if @running_machines
+
+  %h2 Running Machines
+  %table.table.table-bordered.table-hove
+    %thead
+      %th
+      %th Name
+      %th Description
+      %th Address
+      %th Date
+      %th Actions
+
+    %tbody
+      - @running_machines.each do |machine|
+        %tr
+          %td
+            %center= image_tag machine.image.avatar.url(:thumb)
+          %td= machine.image.name
+          %td= machine.image.description
+          %td= machine.ip
+          %td= machine.updated_at.localtime
+          %td
+            =link_to 'Connect', machine_path(machine) , :class => 'btn btn-mini btn-info', :id => "connect_machine_#{machine.id}", :method => :get
+            =link_to 'Reboot', reboot_machine_path(machine) , :class => 'btn btn-mini btn-danger', :id => "reboot_machine_#{machine.id}", :method => :get, :data => { :confirm => 'Rebooting machine. Are you sure?' }
+            =link_to 'Destroy', machine_path(machine) , :class => 'btn btn-mini btn-danger', :id => "destroy_machine_#{machine.id}", :method => :delete, :data => { :confirm => 'Machine will be deleted. It can\'t be undone. Are you sure?' }
+
+%br
+
+-if @available_images
+  %h2 Available Images
+  %table.table.table-bordered.table-hove
+    %thead
+      %th
+      %th Name
+      %th Description
+      %th Actions
+
+    %tbody
+      - @available_images.each do |image|
+        %tr
+          %td 
+            %center= image_tag image.avatar.url(:thumb)
+          %td= image.name
+          %td= image.description
+          %td
+            =link_to 'Launch', create_machine_path(image), :class => 'btn btn-mini btn-info', :id => "create_machine_#{image.id}", :method => :post
+
+%br

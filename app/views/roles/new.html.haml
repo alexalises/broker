@@ -1,0 +1,9 @@
+%h1 Create a new Role
+
+= simple_form_for @role do |f| 
+  = f.input :name 
+  = f.input :machine_lifetime
+  = f.input :machine_idletime
+  = f.input :concurrent_machines
+  = f.button :submit 
+

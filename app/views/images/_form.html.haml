@@ -1,0 +1,13 @@
+= simple_form_for([@cloud_server,@image]) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :description
+    = f.input :machine
+    = f.input :flavor
+    = f.input :network
+    = f.input :number_of_instances
+
+  .form-actions
+    = f.button :submit
